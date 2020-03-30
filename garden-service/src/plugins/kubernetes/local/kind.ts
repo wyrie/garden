@@ -29,7 +29,7 @@ export async function loadImageToKind(buildResult: BuildResult, config: Kubernet
   }
 }
 
-export async function isClusterKind(provider: KubernetesProvider, log: LogEntry): Promise<boolean> {
+export async function isKindCluster(provider: KubernetesProvider, log: LogEntry): Promise<boolean> {
   return (await isKindInstalled(log)) && (await isKindContext(log, provider))
 }
 
