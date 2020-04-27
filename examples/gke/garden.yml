@@ -1,0 +1,32 @@
+kind: Project
+name: gke
+environments:
+  - name: gke
+    variables:
+      build-mode: cluster-docker
+  - name: gke-gcr
+    variables:
+      build-mode: cluster-docker
+      deployment-registry: &deployment-registry
+        # Replace these values as appropriate
+        hostname: eu.gcr.io            # <- set this according to the region your cluster runs in
+        namespace: garden-dev-200012   # <- set this to the project ID of the target cluster
+  - name: gke-gcr-kaniko
+    variables:
+      build-mode: kaniko
+      deployment-registry: *deployment-registry   # <- copies the deployment-registry key from above
+providers:
+  - name: kubernetes
+    context: ${var.gke-context}
+    namespace: ${var.namespace}
+    defaultHostname: ${var.default-hostname}
+    buildMode: ${var.build-mode}
+    deploymentRegistry: ${var.deployment-registry}?  # <- note the ? suffix, which allows this to be undefined
+variables:
+  # Replace these values as appropriate
+  # > the kube context of the cluster
+  gke-context: gke_garden-dev-200012_europe-west1-b_garden-dev-1
+  # > any hostname that points to your cluster's ingress controller
+  default-hostname: ${local.env.USER || local.username}-gke.dev-1.sys.garden
+  # > the namespace to deploy to in the cluster
+  namespace: gke-testing-${local.env.USER || local.username}
