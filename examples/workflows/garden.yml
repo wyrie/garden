@@ -1,0 +1,33 @@
+kind: Project
+name: tasks
+environments:
+  - name: local
+  - name: testing
+providers:
+  - name: local-kubernetes
+    environments: [local]
+  - name: kubernetes
+    environments: [testing]
+    context: gke_garden-platform-dev-267510_europe-west1-b_gke-cluster-dev-f29377c0
+    # context: gke_garden-dev-200012_europe-west1-b_garden-dev-1
+    namespace: workflows-testing-${local.env.CIRCLE_BUILD_NUM || local.username}
+    defaultHostname: tasks-testing.dev-1.sys.garden
+    buildMode: cluster-docker
+variables:
+  postgres-database: postgres
+  # Only use for testing!
+  postgres-username: postgres
+  postgres-password: test-password
+
+---
+
+kind: Workflow
+name: integ-test
+description: Clears and populates the database with test data, then runs integ tests.
+steps:
+  - command: [run, task, db-clear]
+    description: Wipe the DB
+  - command: [run, task, populate-db]
+    description: Populate the DB with test data
+  - command: [test, "--name=integ"]
+    description: Run the full suite of integ tests

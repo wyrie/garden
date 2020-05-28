@@ -1,0 +1,25 @@
+kind: Module
+description: Postgres container for storing voting results
+type: container
+name: postgres
+image: postgres:11.7-alpine
+services:
+  - name: postgres
+    volumes:
+      - name: data
+        containerPath: /db-data
+    ports:
+      - name: db
+        containerPort: 5432
+    env:
+      POSTGRES_DATABASE: ${var.postgres-database}
+      POSTGRES_USERNAME: ${var.postgres-username}
+      POSTGRES_PASSWORD: ${var.postgres-password}
+    healthCheck:
+      command: [
+        psql,
+        -w,
+        -U, "${var.postgres-username}",
+        -d, "${var.postgres-database}",
+        -c, "SELECT 1",
+      ]
