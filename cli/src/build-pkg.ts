@@ -11,7 +11,7 @@ import { resolve, relative } from "path"
 import Bluebird from "bluebird"
 import { STATIC_DIR, GARDEN_CLI_ROOT, GARDEN_CORE_ROOT } from "@garden-io/core/build/src/constants"
 import { remove, mkdirp, copy, writeFile } from "fs-extra"
-import { exec, getPackageVersion } from "@garden-io/core/build/src/util/util"
+import { exec } from "@garden-io/core/build/src/util/util"
 import { randomString } from "@garden-io/core/build/src/util/string"
 import { pick } from "lodash"
 import minimist from "minimist"
@@ -49,7 +49,7 @@ const targets: { [name: string]: TargetSpec } = {
 
 async function buildBinaries(args: string[]) {
   const argv = minimist(args)
-  const version = argv.version || getPackageVersion()
+  const version = argv.version || require(resolve(repoRoot, "package.json")).version
   const selected = argv._.length > 0 ? pick(targets, argv._) : targets
 
   console.log(chalk.cyan("Building targets: ") + Object.keys(selected).join(", "))

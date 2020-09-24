@@ -137,7 +137,8 @@ commands:
       version:
         description: |
           The version tag used when building. Use to set the version string in the generated zip file names,
-          e.g. when creating unstable releases. The script defaults to using the version from core/package.json.
+          e.g. when creating unstable releases. The script defaults to using the version from the top-level
+          package.json.
         type: string
         default: ""
     steps:
